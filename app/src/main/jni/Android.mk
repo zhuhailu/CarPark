@@ -21,8 +21,9 @@ LOCAL_SRC_FILES := $(COMMON_SRC_PATH)/esShader.c \
 				   $(SRC_PATH)/egl/Floor.cpp \
 				   $(SRC_PATH)/egl/Car.cpp \
 				   $(SRC_PATH)/egl/Camera.cpp \
-				   $(SRC_PATH)/egl/CarPack.cpp \
+				   $(SRC_PATH)/egl/CarPark.cpp \
 				   $(SRC_PATH)/egl/EglMain.cpp \
+				   $(SRC_PATH)/egl/EglProgram.cpp \
 				   $(SRC_PATH)/egl/EglProgramFactory.cpp
 
 

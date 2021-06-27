@@ -11,14 +11,16 @@ class Camera;
 
 class Car : public EglItem {
 
+EGLITEM_VERTICES_INFO_DEF_H
+
 public:
     Car();
     virtual ~Car();
 
-    virtual void initVerticeInfo(VERTICE_INFO *verticeInfo);
+    virtual void initVerticesInfo(VERTICES_INFO *verticesInfo);
 
-private:
 };
 
+EGLITEM_VERTICES_INFO_DEF_INIT(Car)
 
 #endif //CARPARK_CAR_H

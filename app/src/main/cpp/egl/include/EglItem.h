@@ -7,6 +7,8 @@
 
 #include <GLES3/gl3.h>
 #include <vector>
+#include <set>
+#include "CommonDef.h"
 
 class EglItem {
 
@@ -14,23 +16,34 @@ public:
     EglItem();
     virtual ~EglItem();
 
-    struct VERTICE_INFO {
+    struct VERTICES_INFO {
         GLfloat*    vertices;
+        int         numVertices;
+        int         globalIndex;
         GLuint*     indicesTriangles;
         int         numIndicesTriangles;
+        int         globalIndexTriangles;
         GLuint*     indicesLines;
         int         numIndicesLines;
+        int         globalIndexLines;
+        bool        isInit;
 
-        VERTICE_INFO();
-        virtual ~VERTICE_INFO();
+        VERTICES_INFO();
+        virtual ~VERTICES_INFO();
 
         void clear();
     };
 
-    const VERTICE_INFO* getVerticeInfo();
-    virtual void initVerticeInfo(VERTICE_INFO* verticeInfo) = 0;
+    void getGlobalVerticesInfo(std::set<VERTICES_INFO*> vertSet);
+    int getChildrenTreeInstanceCount();
+    virtual void getInstanceColor(GLubyte (*colors)[4], int* curIndex, const int count);
+
+    VERTICES_INFO* getVerticesInfo();
+    virtual VERTICES_INFO* getVerticesInfoObj() = 0;
+    virtual bool setVerticesInfoObj(VERTICES_INFO*) = 0;
+    virtual void initVerticesInfo(VERTICES_INFO* verticesInfo) = 0;
     virtual bool isPerspective() { return false; }
-    static void destroyVerticeInfo();
+    void destroyVerticesInfo();
 
     void setScale(float x, float y, float z);
     void setScaleX(float x);
@@ -60,19 +73,19 @@ public:
     inline EglItem* getParent() { return mParent; }
 
     inline int getChildrenCount() { return  mChildren.size(); }
+    EglItem* getChild(const int pos);
     void addChild(EglItem* child, const int pos = -1);
     void removeChild(EglItem* child);
     void removeChild(int start, int end = -1);
 
 private:
-    static VERTICE_INFO*    sVerticeInfo;
-
     EglItem*                mParent;
     std::vector<EglItem*>   mChildren;
 
     float       mScale[3];
     float       mPostion[3];
     float       mRotate[3];
+    uint8_t     mColor[4];
 
 };
 

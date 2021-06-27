@@ -9,15 +9,18 @@
 
 class Floor : public EglItem {
 
+EGLITEM_VERTICES_INFO_DEF_H
+
 public:
     Floor();
     virtual ~Floor();
 
-    virtual void initVerticeInfo(EglItem::VERTICE_INFO* verticeInfo);
+    virtual void initVerticesInfo(EglItem::VERTICES_INFO* verticesInfo);
 
 private:
 
 };
 
+EGLITEM_VERTICES_INFO_DEF_INIT(Floor)
 
 #endif //CARPARK_FLOOR_H

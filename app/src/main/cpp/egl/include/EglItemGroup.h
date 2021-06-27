@@ -6,18 +6,24 @@
 #define CARPARK_EGLITEMGROUP_H
 
 #include "EglItem.h"
+#include <set>
 
-class EglItemGroup : protected EglItem {
+class EglItemGroup : public EglItem {
 public:
     EglItemGroup();
     virtual ~EglItemGroup();
 
-    virtual void initVerticeInfo(VERTICE_INFO *verticeInfo) {}
 
-
+    VERTICES_INFO* getGlobalVerticesInfo();
+    virtual void getInstanceColor(GLubyte (*colors)[4], int* curIndex, const int count);
 
 private:
+    virtual void initVerticesInfo(VERTICES_INFO *verticesInfo) {}
+    virtual VERTICES_INFO* getVerticesInfoObj() { return NULL; }
+    virtual bool setVerticesInfoObj(VERTICES_INFO*) { return false; }
 
+private:
+    std::set<VERTICES_INFO*>    mVerticesInfoSet;
 
 };
 

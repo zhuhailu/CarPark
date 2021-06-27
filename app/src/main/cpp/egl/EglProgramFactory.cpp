@@ -5,7 +5,7 @@
 #include "EglProgramFactory.h"
 #include "EglProgram.h"
 #include "EglProgramDef.h"
-#include "CarPack.h"
+#include "CarPark.h"
 
 EglProgramFactory* EglProgramFactory::sInstance = NULL;
 
@@ -58,7 +58,7 @@ EglProgram* EglProgramFactory::createEglProgram(std::string name)
 {
     EglProgram* program = NULL;
     if (PROGRAM_CARPACK == name) {
-        program = static_cast<EglProgram*>(new CarPack());
+        program = static_cast<EglProgram*>(new CarPark());
     }
     else {
         // do nothing.

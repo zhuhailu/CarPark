@@ -16,9 +16,9 @@ Floor::~Floor()
 
 }
 
-void Floor::initVerticeInfo(EglItem::VERTICE_INFO* verticeInfo)
+void Floor::initVerticesInfo(EglItem::VERTICES_INFO* verticesInfo)
 {
-    if (NULL != verticeInfo) {
+    if (NULL != verticesInfo) {
         return;
     }
 
@@ -30,12 +30,13 @@ void Floor::initVerticeInfo(EglItem::VERTICE_INFO* verticeInfo)
         0.5f, -0.5f,  0.0f
     };
 
-    if ( NULL != verticeInfo->vertices)
-        free(verticeInfo->vertices);
+    if ( NULL != verticesInfo->vertices)
+        free(verticesInfo->vertices);
 
-    verticeInfo->vertices =
+    verticesInfo->vertices =
             static_cast<GLfloat *>(malloc(sizeof(GLfloat) * 3 * numVertices));
-    memcpy(verticeInfo->vertices, rectVerts, sizeof(rectVerts));
+    memcpy(verticesInfo->vertices, rectVerts, sizeof(rectVerts));
+    verticesInfo->numVertices = numVertices;
 
 
     int numIndicesTriangles = 6;
@@ -44,13 +45,13 @@ void Floor::initVerticeInfo(EglItem::VERTICE_INFO* verticeInfo)
         0, 2, 3
     };
 
-    if (NULL != verticeInfo->indicesTriangles)
-        free(verticeInfo->indicesTriangles);
+    if (NULL != verticesInfo->indicesTriangles)
+        free(verticesInfo->indicesTriangles);
 
-    verticeInfo->indicesTriangles =
+    verticesInfo->indicesTriangles =
             static_cast<GLuint*>(malloc(sizeof (GLuint) * numIndicesTriangles));
-    memcpy(verticeInfo->indicesTriangles, rectIndicesTriangles, sizeof(rectIndicesTriangles));
-    verticeInfo->numIndicesTriangles = numIndicesTriangles;
+    memcpy(verticesInfo->indicesTriangles, rectIndicesTriangles, sizeof(rectIndicesTriangles));
+    verticesInfo->numIndicesTriangles = numIndicesTriangles;
 
 
     int numIndicesLines = 8;
@@ -61,13 +62,13 @@ void Floor::initVerticeInfo(EglItem::VERTICE_INFO* verticeInfo)
         0, 3
     };
 
-    if (NULL != verticeInfo->indicesLines)
-        free(verticeInfo->indicesLines);
+    if (NULL != verticesInfo->indicesLines)
+        free(verticesInfo->indicesLines);
 
-    verticeInfo->indicesLines =
+    verticesInfo->indicesLines =
             static_cast<GLuint*>(malloc(sizeof(GLuint) * numIndicesLines));
-    memcpy(verticeInfo->indicesLines, rectIndicesLines, sizeof(rectIndicesLines));
-    verticeInfo->numIndicesLines = numIndicesLines;
+    memcpy(verticesInfo->indicesLines, rectIndicesLines, sizeof(rectIndicesLines));
+    verticesInfo->numIndicesLines = numIndicesLines;
 
 }
 

@@ -4,39 +4,48 @@
 
 #include "EglItem.h"
 
-EglItem::VERTICE_INFO* EglItem::sVerticeInfo = NULL;
-
-EglItem::VERTICE_INFO::VERTICE_INFO()
+EglItem::VERTICES_INFO::VERTICES_INFO()
     : vertices(NULL)
+    , numVertices(0)
+    , globalIndex(0)
     , indicesTriangles(NULL)
     , numIndicesTriangles(0)
+    , globalIndexTriangles(0)
     , indicesLines(NULL)
     , numIndicesLines(0)
+    , globalIndexLines(0)
+    , isInit(false)
 {
 }
 
-EglItem::VERTICE_INFO::~VERTICE_INFO()
+EglItem::VERTICES_INFO::~VERTICES_INFO()
 {
     clear();
 }
 
-void EglItem::VERTICE_INFO::clear() {
+void EglItem::VERTICES_INFO::clear() {
     if (NULL != vertices) {
         free(vertices);
         vertices = NULL;
+        numVertices = 0;
+        globalIndex = 0;
     }
 
     if (NULL != indicesTriangles) {
         free(indicesTriangles);
         indicesTriangles = NULL;
         numIndicesTriangles = 0;
+        globalIndexTriangles = 0;
     }
 
     if (NULL != indicesLines) {
         free(indicesLines);
         indicesLines = NULL;
         numIndicesLines = 0;
+        globalIndexLines = 0;
     }
+
+    isInit = false;
 }
 
 EglItem::EglItem()
@@ -44,6 +53,7 @@ EglItem::EglItem()
     , mScale{0.0f, 0.0f, 0.0f}
     , mPostion{0.0f, 0.0f, 0.0f}
     , mRotate{0.0f, 0.0f, 0.0f}
+    , mColor{0, 0, 0, 255}
 {
 
 }
@@ -52,20 +62,86 @@ EglItem::~EglItem()
 {
 }
 
-const EglItem::VERTICE_INFO* EglItem::getVerticeInfo()
-{
-    if (NULL == sVerticeInfo) {
-        sVerticeInfo = new VERTICE_INFO();
-        initVerticeInfo(sVerticeInfo);
+
+void EglItem::getGlobalVerticesInfo(std::set<VERTICES_INFO *> vertSet) {
+
+    if (0 < getChildrenCount()) {
+        for (int index = 0; index < getChildrenCount(); ++index) {
+            getChild(index)->getGlobalVerticesInfo(vertSet);
+        }
     }
-    return sVerticeInfo;
+
+    VERTICES_INFO* vert = getVerticesInfo();
+    if (NULL != vert) {
+        vertSet.insert(vert);
+    }
+
 }
 
-void EglItem::destroyVerticeInfo()
+int EglItem::getChildrenTreeInstanceCount()
 {
-    if (NULL != sVerticeInfo) {
-        delete sVerticeInfo;
-        sVerticeInfo = NULL;
+    int iChildCount = getChildrenCount();
+    int result = iChildCount;
+
+    for (int index = 0; index < iChildCount; ++index) {
+        EglItem* child = getChild(index);
+        if (child->isPerspective()) {
+            result -= 1;
+        }
+        else if (0 < child->getChildrenCount()){
+            result += child->getChildrenTreeInstanceCount();
+        }
+        else {
+            // result += 0;
+        }
+    }
+
+    return result;
+}
+
+void EglItem::getInstanceColor(GLubyte (*colors)[4], int* curIndex, const int count)
+{
+    if (*curIndex >= count) {
+        return;
+    }
+    if (!isPerspective()) {
+        colors[curIndex][0] = mColor[0];
+        colors[curIndex][1] = mColor[1];
+        colors[curIndex][2] = mColor[2];
+        colors[curIndex][3] = mColor[3];
+        (*curIndex)++;
+
+        int iChildCount = getChildrenCount();
+        for (int index = 0; index < iChildCount; ++index) {
+            getChild(index)->getInstanceColor(colors, curIndex, count);
+        }
+    }
+}
+
+EglItem::VERTICES_INFO* EglItem::getVerticesInfo()
+{
+    VERTICES_INFO* verticesInfo = getVerticesInfoObj();
+    if (NULL == verticesInfo) {
+        verticesInfo = new VERTICES_INFO();
+        if (!setVerticesInfoObj(verticesInfo)) {
+            delete verticesInfo;
+            verticesInfo = NULL;
+        }
+    }
+    if (NULL != verticesInfo && !verticesInfo->isInit) {
+        initVerticesInfo(verticesInfo);
+        verticesInfo->isInit = true;
+    }
+
+    return verticesInfo;
+}
+
+void EglItem::destroyVerticesInfo()
+{
+    VERTICES_INFO* verticesInfo = getVerticesInfoObj();
+    if (NULL != verticesInfo) {
+        setVerticesInfoObj(NULL);
+        delete verticesInfo;
     }
 }
 
@@ -149,6 +225,11 @@ void EglItem::setRotateZ(float z)
 {
     if (z >= 0.0f)
         mRotate[2] = z;
+}
+
+EglItem* EglItem::getChild(const int pos)
+{
+    return mChildren.at(pos);
 }
 
 void EglItem::addChild(EglItem* child, int pos)

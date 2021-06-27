@@ -13,7 +13,9 @@ public:
     Camera();
     virtual ~Camera();
 
-    virtual void initVerticeInfo(VERTICE_INFO *verticeInfo) final {}
+    virtual VERTICES_INFO* getVerticesInfoObj() final { return NULL; }
+    virtual bool setVerticesInfoObj(VERTICES_INFO*) final {return false; }
+    virtual void initVerticesInfo(VERTICES_INFO *verticesInfo) final {}
     virtual bool isPerspective() { return true; }
 
     void setTarget(EglItem* target) { mTarget = target; }
