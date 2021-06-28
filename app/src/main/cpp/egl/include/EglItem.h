@@ -44,6 +44,9 @@ public:
                                    const float* parentRotate);
     virtual void getInstanceIndices(GLuint (*indices), int* curIndex, const int count);
 
+    void getGlobalPostion(float* pos);
+    void getGlobalRotate(float* rotate);
+
     VERTICES_INFO* getVerticesInfo();
     virtual VERTICES_INFO* getVerticesInfoObj() = 0;
     virtual bool setVerticesInfoObj(VERTICES_INFO*) = 0;

@@ -198,6 +198,30 @@ void EglItem::getInstanceIndices(GLuint (*indices), int* curIndex, const int cou
     }
 }
 
+void EglItem::getGlobalPostion(float* pos)
+{
+    memcpy(pos, mPostion, sizeof(mPostion));
+    EglItem* it = this;
+    while (NULL != it->getParent()) {
+        it = it->getParent();
+        pos[0] += pos[0] + it->getPostionX();
+        pos[1] += pos[1] + it->getPostionY();
+        pos[2] += pos[2] + it->getPostionZ();
+    }
+}
+
+void EglItem::getGlobalRotate(float* rotate)
+{
+    memcpy(rotate, mRotate, sizeof(mRotate));
+    EglItem* it = this;
+    while (NULL != it->getParent()) {
+        it = it->getParent();
+        rotate[0] += rotate[0] + it->getPostionX();
+        rotate[1] += rotate[1] + it->getPostionY();
+        rotate[2] += rotate[2] + it->getPostionZ();
+    }
+}
+
 EglItem::VERTICES_INFO* EglItem::getVerticesInfo()
 {
     VERTICES_INFO* verticesInfo = getVerticesInfoObj();

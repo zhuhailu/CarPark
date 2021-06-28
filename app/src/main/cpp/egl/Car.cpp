@@ -4,7 +4,7 @@
 
 #include "Car.h"
 
-
+EGLITEM_VERTICES_INFO_DEF_INIT(Car)
 
 Car::Car()
     : EglItem()

@@ -15,7 +15,6 @@ LOCAL_SRC_FILES := $(COMMON_SRC_PATH)/esShader.c \
 				   $(COMMON_SRC_PATH)/esTransform.c \
 				   $(COMMON_SRC_PATH)/esUtil.c \
 				   $(COMMON_SRC_PATH)/Android/esUtil_Android.c \
-				   $(SRC_PATH)/egl/Simple_VertexShader.c \
 				   $(SRC_PATH)/egl/EglItem.cpp \
 				   $(SRC_PATH)/egl/EglItemGroup.cpp \
 				   $(SRC_PATH)/egl/Floor.cpp \

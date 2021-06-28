@@ -39,6 +39,7 @@ protected:
 
 private:
     EglItemGroup*   mRoot;
+    int             mInstanceCount;
 };
 
 #endif //CARPARK_EGLPROGRAM_H

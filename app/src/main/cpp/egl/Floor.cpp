@@ -4,6 +4,7 @@
 
 #include "Floor.h"
 
+EGLITEM_VERTICES_INFO_DEF_INIT(Floor)
 
 Floor::Floor()
     : EglItem()

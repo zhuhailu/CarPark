@@ -21,6 +21,4 @@ public:
 
 };
 
-EGLITEM_VERTICES_INFO_DEF_INIT(Car)
-
 #endif //CARPARK_CAR_H

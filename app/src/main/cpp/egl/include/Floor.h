@@ -21,6 +21,4 @@ private:
 
 };
 
-EGLITEM_VERTICES_INFO_DEF_INIT(Floor)
-
 #endif //CARPARK_FLOOR_H

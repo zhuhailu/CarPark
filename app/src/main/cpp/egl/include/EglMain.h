@@ -7,12 +7,9 @@
 
 #include "esUtil.h"
 
-#define NUM_INSTANCES   100
-#define POSITION_LOC    0
-#define COLOR_LOC       1
-#define MVP_LOC         2
 
-int esMain (ESContext *esContext);
+
+//int esMain (ESContext *esContext);
 void Update ( ESContext *esContext, float deltaTime );
 void Draw ( ESContext *esContext );
 void Shutdown ( ESContext *esContext );
@@ -29,25 +26,6 @@ public:
     void draw ( ESContext *esContext );
     void shutdown ( ESContext *esContext );
 
-    typedef struct
-    {
-        // Handle to a program object
-        GLuint programObject;
-
-        // VBOs
-        GLuint positionVBO;
-        GLuint colorVBO;
-        GLuint mvpVBO;
-        GLuint indicesIBO;
-
-        // Number of indices
-        int       numIndices;
-
-        // Rotation angle
-        GLfloat   angle[NUM_INSTANCES];
-
-    } UserData;
-
 private:
     EglMain(ESContext* esContext);
     virtual ~EglMain();
@@ -56,8 +34,26 @@ private:
     static EglMain* sInstance;
 
     EglProgram* mCurrentProgram;
-    ESContext*  mEsContext;
-    UserData*   mUserData;
 };
+
+
+int esMain (ESContext *esContext)
+{
+    EglMain* main = EglMain::getInstance(esContext);
+
+    esCreateWindow ( esContext, "EglMain", 640, 480, ES_WINDOW_RGB | ES_WINDOW_DEPTH );
+
+    if (!main->init ( esContext ) )
+    {
+        EglMain::destroyInstance();
+        return GL_FALSE;
+    }
+
+    esRegisterShutdownFunc ( esContext, Shutdown );
+    esRegisterUpdateFunc ( esContext, Update );
+    esRegisterDrawFunc ( esContext, Draw );
+
+    return GL_TRUE;
+}
 
 #endif //CARPARK_EGLMAIN_H
