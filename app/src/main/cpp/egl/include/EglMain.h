@@ -8,11 +8,12 @@
 #include "esUtil.h"
 
 
-
-//int esMain (ESContext *esContext);
-void Update ( ESContext *esContext, float deltaTime );
-void Draw ( ESContext *esContext );
-void Shutdown ( ESContext *esContext );
+extern "C" {
+    int esMain(ESContext *esContext);
+    void Update(ESContext *esContext, float deltaTime);
+    void Draw(ESContext *esContext);
+    void Shutdown(ESContext *esContext);
+};
 
 class EglProgram;
 
@@ -35,25 +36,5 @@ private:
 
     EglProgram* mCurrentProgram;
 };
-
-
-int esMain (ESContext *esContext)
-{
-    EglMain* main = EglMain::getInstance(esContext);
-
-    esCreateWindow ( esContext, "EglMain", 640, 480, ES_WINDOW_RGB | ES_WINDOW_DEPTH );
-
-    if (!main->init ( esContext ) )
-    {
-        EglMain::destroyInstance();
-        return GL_FALSE;
-    }
-
-    esRegisterShutdownFunc ( esContext, Shutdown );
-    esRegisterUpdateFunc ( esContext, Update );
-    esRegisterDrawFunc ( esContext, Draw );
-
-    return GL_TRUE;
-}
 
 #endif //CARPARK_EGLMAIN_H
