@@ -22,15 +22,22 @@ void CarPark::getShaderSrc(char* vertShaderSrc, char* fragShaderSrc)
 {
     const char vShaderStr[] =
             "#version 300 es                             \n"
-            "layout(location = 0) in vec4 a_position;    \n"
-            "layout(location = 1) in vec4 a_color;       \n"
-            "layout(location = 2) in mat4 a_mvpMatrix;   \n"
-            "layout(location = 3) in mat4 a_size;        \n"
+            "layout(location = 0) in vec4 i_vertices;    \n"
+            "layout(location = 1) in vec4 i_color;       \n"
+            "layout(location = 2) in mat4 i_mvpMatrix;   \n"
+            "layout(location = 3) in vec3 i_size;        \n"
+            "layout(location = 4) in vec3 i_postion;     \n"
+            "layout(location = 5) in vec3 i_rotate;      \n"
+            "layout(location = 6) in int  i_index;       \n"
             "out vec4 v_color;                           \n"
             "void main()                                 \n"
             "{                                           \n"
-            "   v_color = a_color;                       \n"
-            "   gl_Position = a_mvpMatrix * a_position;  \n"
+            "   if (gl_VertexID < i_index)               \n"
+            "       return;                              \n"
+            "   vec4 u_vertices = vec4(i_vertices.x * i_size.x, i_vertices.y * i_size.y, "
+            "                          i_vertices.z * i_size.z, i_vertices.w);         \n"
+            "   v_color = i_color;                       \n"
+            "   gl_Position = a_mvpMatrix * u_vertices;  \n"
             "}                                           \n";
 
     const char fShaderStr[] =
@@ -49,54 +56,6 @@ void CarPark::getShaderSrc(char* vertShaderSrc, char* fragShaderSrc)
     fragShaderSrc = static_cast<char*>(malloc(sizeof(fShaderStr)));
     memcpy(fragShaderSrc, fShaderStr, sizeof(fShaderStr));
 }
-
-
-///
-// Initialize the shader and program object
-//
-//bool CarPark::init(ESContext* esContext)
-//{
-//
-//
-//    // Random color for each instance
-//    {
-//        GLubyte colors[NUM_INSTANCES][4];
-//        int instance;
-//
-//        srandom ( 0 );
-//
-//        for ( instance = 0; instance < NUM_INSTANCES; instance++ )
-//        {
-//            colors[instance][0] = random() % 255;
-//            colors[instance][1] = random() % 255;
-//            colors[instance][2] = random() % 255;
-//            colors[instance][3] = 0;
-//        }
-//
-//        glGenBuffers ( 1, &userData->colorVBO );
-//        glBindBuffer ( GL_ARRAY_BUFFER, userData->colorVBO );
-//        glBufferData ( GL_ARRAY_BUFFER, NUM_INSTANCES * 4, colors, GL_STATIC_DRAW );
-//    }
-//
-//    // Allocate storage to store MVP per instance
-//    {
-//        int instance;
-//
-//        // Random angle for each instance, compute the MVP later
-//        for ( instance = 0; instance < NUM_INSTANCES; instance++ )
-//        {
-//            userData->angle[instance] = ( float ) ( random() % 32768 ) / 32767.0f * 360.0f;
-//        }
-//
-//        glGenBuffers ( 1, &userData->mvpVBO );
-//        glBindBuffer ( GL_ARRAY_BUFFER, userData->mvpVBO );
-//        glBufferData ( GL_ARRAY_BUFFER, NUM_INSTANCES * sizeof ( ESMatrix ), NULL, GL_DYNAMIC_DRAW );
-//    }
-//    glBindBuffer ( GL_ARRAY_BUFFER, 0 );
-//
-//    glClearColor ( 1.0f, 1.0f, 1.0f, 0.0f );
-//    return GL_TRUE;
-//}
 
 
 ///
@@ -214,18 +173,3 @@ void CarPark::draw ( ESContext *esContext )
 //    glDrawElementsInstanced ( GL_TRIANGLES, userData->numIndices, GL_UNSIGNED_INT, ( const void * ) NULL, NUM_INSTANCES );
 }
 
-///
-// Cleanup
-//
-void CarPark::shutdown ( ESContext *esContext )
-{
-//    UserData *userData = esContext->userData;
-//
-//    glDeleteBuffers ( 1, &userData->positionVBO );
-//    glDeleteBuffers ( 1, &userData->colorVBO );
-//    glDeleteBuffers ( 1, &userData->mvpVBO );
-//    glDeleteBuffers ( 1, &userData->indicesIBO );
-//
-//    // Delete program object
-//    glDeleteProgram ( userData->programObject );
-}

@@ -14,22 +14,22 @@ public:
     EglProgram();
     virtual ~EglProgram();
 
-    bool init(ESContext *esContext);
+    virtual bool init(ESContext *esContext);
     virtual EglItemGroup* createWorld() = 0;
-
-
     virtual void getShaderSrc(char* vertShaderSrc, char* fragShaderSrc) = 0;
-
-
-    virtual void update(ESContext *esContext, float deltaTime) = 0;
-    virtual void draw(ESContext *esContext) = 0;
-    virtual void shutdown(ESContext *esContext) = 0;
+    virtual void update(ESContext *esContext, float deltaTime);
+    virtual void draw(ESContext *esContext);
+    virtual void shutdown(ESContext *esContext);
 
 protected:
     GLuint          mProgramObject;
 
     // VBOs
     GLuint          mColorVBO;
+    GLuint          mSizeVBO;
+    GLuint          mPostionVBO;
+    GLuint          mRotateVBO;
+    GLuint          mIndexVBO;
     GLuint          mMvpVBO;
     GLuint          mVerticesVBO;
     GLuint          mIndicesTrianglesIBO;

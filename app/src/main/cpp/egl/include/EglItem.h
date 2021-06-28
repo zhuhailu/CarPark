@@ -37,6 +37,12 @@ public:
     void getGlobalVerticesInfo(std::set<VERTICES_INFO*> vertSet);
     int getChildrenTreeInstanceCount();
     virtual void getInstanceColor(GLubyte (*colors)[4], int* curIndex, const int count);
+    virtual void getInstanceSize(GLfloat (*sizes)[3], int* curIndex, const int count);
+    virtual void getInstancePostion(GLfloat (*postions)[3], int* curIndex, const int count,
+                                    const float* parentPos);
+    virtual void getInstanceRotate(GLfloat (*rotates)[3], int* curIndex, const int count,
+                                   const float* parentRotate);
+    virtual void getInstanceIndices(GLuint (*indices), int* curIndex, const int count);
 
     VERTICES_INFO* getVerticesInfo();
     virtual VERTICES_INFO* getVerticesInfoObj() = 0;

@@ -18,11 +18,7 @@ public:
 
     virtual void update (ESContext *esContext, float deltaTime);
     virtual void draw (ESContext *esContext);
-    virtual void shutdown (ESContext *esContext);
-
 private:
-
-
 };
 
 #endif //CARPARK_CARPARK_H

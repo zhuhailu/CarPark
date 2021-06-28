@@ -79,4 +79,41 @@ void EglItemGroup::getInstanceColor(GLubyte (*colors)[4], int* curIndex, const i
     }
 }
 
+void EglItemGroup::getInstanceSize(GLfloat (*sizes)[3], int *curIndex, const int count)
+{
+    int iChildCount = getChildrenCount();
+    for (int index = 0; index < iChildCount; ++index) {
+        getChild(index)->getInstanceSize(sizes, curIndex, count);
+    }
+}
+
+void EglItemGroup::getInstancePostion(GLfloat (*postions)[3], int *curIndex, const int count,
+                                      const float* parentPos)
+{
+    int iChildCount = getChildrenCount();
+    float rootPos[] = {0.0f, 0.0f, 0.0f};
+    for (int index = 0; index < iChildCount; ++index) {
+        getChild(index)->getInstancePostion(postions, curIndex, count, rootPos);
+    }
+}
+
+void EglItemGroup::getInstanceRotate(GLfloat (*rotates)[3], int *curIndex, const int count,
+                                     const float* parentRotate)
+{
+    int iChildCount = getChildrenCount();
+    float rootRotate[] = {0.0f, 0.0f, 0.0f};
+    for (int index = 0; index < iChildCount; ++index) {
+        getChild(index)->getInstancePostion(rotates, curIndex, count, rootRotate);
+    }
+}
+
+void EglItemGroup::getInstanceIndices(GLuint (*indices), int *curIndex, const int count)
+{
+    int iChildCount = getChildrenCount();
+    for (int index = 0; index < iChildCount; ++index) {
+        getChild(index)->getInstanceIndices(indices, curIndex, count);
+    }
+}
+
+
 

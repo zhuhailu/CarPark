@@ -105,15 +105,95 @@ void EglItem::getInstanceColor(GLubyte (*colors)[4], int* curIndex, const int co
         return;
     }
     if (!isPerspective()) {
-        colors[curIndex][0] = mColor[0];
-        colors[curIndex][1] = mColor[1];
-        colors[curIndex][2] = mColor[2];
-        colors[curIndex][3] = mColor[3];
+        colors[*curIndex][0] = mColor[0];
+        colors[*curIndex][1] = mColor[1];
+        colors[*curIndex][2] = mColor[2];
+        colors[*curIndex][3] = mColor[3];
         (*curIndex)++;
 
         int iChildCount = getChildrenCount();
         for (int index = 0; index < iChildCount; ++index) {
             getChild(index)->getInstanceColor(colors, curIndex, count);
+        }
+    }
+}
+
+void EglItem::getInstanceSize(GLfloat (*sizes)[3], int* curIndex, const int count)
+{
+    if (*curIndex >= count) {
+        return;
+    }
+    if (!isPerspective()) {
+        sizes[*curIndex][0] = mScale[0];
+        sizes[*curIndex][1] = mScale[1];
+        sizes[*curIndex][2] = mScale[2];
+        (*curIndex)++;
+
+        int iChildCount = getChildrenCount();
+        for (int index = 0; index < iChildCount; ++index) {
+            getChild(index)->getInstanceSize(sizes, curIndex, count);
+        }
+    }
+}
+
+void EglItem::getInstancePostion(GLfloat (*postions)[3], int* curIndex, const int count,
+                                 const float* parentPos)
+{
+    if (*curIndex >= count) {
+        return;
+    }
+    if (!isPerspective()) {
+        float pos[3] = {mPostion[0] + parentPos[0],
+                        mPostion[1] + parentPos[1],
+                        mPostion[2] + parentPos[2]};
+
+        postions[*curIndex][0] = pos[0];
+        postions[*curIndex][1] = pos[1];
+        postions[*curIndex][2] = pos[2];
+        (*curIndex)++;
+
+        int iChildCount = getChildrenCount();
+        for (int index = 0; index < iChildCount; ++index) {
+            getChild(index)->getInstancePostion(postions, curIndex, count, pos);
+        }
+    }
+}
+
+void EglItem::getInstanceRotate(GLfloat (*rotates)[3], int* curIndex, const int count,
+                                const float* parentRotate)
+{
+    if (*curIndex >= count) {
+        return;
+    }
+    if (!isPerspective()) {
+        float rotate[3] = {mRotate[0] + parentRotate[0],
+                           mRotate[1] + parentRotate[1],
+                           mRotate[2] + parentRotate[2]};
+
+        rotates[*curIndex][0] = rotate[0];
+        rotates[*curIndex][1] = rotate[1];
+        rotates[*curIndex][2] = rotate[2];
+        (*curIndex)++;
+
+        int iChildCount = getChildrenCount();
+        for (int index = 0; index < iChildCount; ++index) {
+            getChild(index)->getInstanceRotate(rotates, curIndex, count, rotate);
+        }
+    }
+}
+
+void EglItem::getInstanceIndices(GLuint (*indices), int* curIndex, const int count)
+{
+    if (*curIndex >= count) {
+        return;
+    }
+    if (!isPerspective()) {
+        indices[*curIndex] = getVerticesInfoObj()->globalIndex;
+        (*curIndex)++;
+
+        int iChildCount = getChildrenCount();
+        for (int index = 0; index < iChildCount; ++index) {
+            getChild(index)->getInstanceIndices(indices, curIndex, count);
         }
     }
 }
