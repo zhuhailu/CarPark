@@ -16,7 +16,7 @@ public:
 
     virtual bool init(ESContext *esContext);
     virtual EglItemGroup* createWorld() = 0;
-    virtual void getShaderSrc(char* vertShaderSrc, char* fragShaderSrc) = 0;
+    virtual void getShaderSrc(char** vertShaderSrc, char** fragShaderSrc) = 0;
     virtual void update(ESContext *esContext, float deltaTime);
     virtual void draw(ESContext *esContext);
     virtual void shutdown(ESContext *esContext);

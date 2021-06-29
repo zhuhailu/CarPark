@@ -6,6 +6,7 @@
 #include "EglProgramFactory.h"
 #include "EglProgramDef.h"
 #include "EglProgram.h"
+#include "CommonDef.h"
 
 EglMain* EglMain::sInstance = NULL;
 
@@ -13,7 +14,11 @@ int esMain (ESContext *esContext)
 {
     EglMain* main = EglMain::getInstance(esContext);
 
+    LOGD("esMain %p", main);
+
     esCreateWindow ( esContext, "EglMain", 640, 480, ES_WINDOW_RGB | ES_WINDOW_DEPTH );
+
+    LOGD("esCreateWindow end");
 
     if (!main->init ( esContext ) )
     {
@@ -75,6 +80,8 @@ bool EglMain::init(ESContext *esContext)
     mCurrentProgram = EglProgramFactory::getInstance()->createEglProgram(PROGRAM_CARPACK);
     if (NULL == mCurrentProgram)
         return false;
+
+    LOGD("EglMain::%s %p",__FUNCTION__, mCurrentProgram);
 
     return mCurrentProgram->init(esContext);
 }

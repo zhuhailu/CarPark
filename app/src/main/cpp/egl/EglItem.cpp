@@ -63,17 +63,19 @@ EglItem::~EglItem()
 }
 
 
-void EglItem::getGlobalVerticesInfo(std::set<VERTICES_INFO *> vertSet) {
-
+void EglItem::getGlobalVerticesInfo(std::set<VERTICES_INFO *>* vertSet)
+{
+    LOGD("EglItem::%s getGlobalVerticesInfo %p\n",__FUNCTION__, vertSet);
     if (0 < getChildrenCount()) {
         for (int index = 0; index < getChildrenCount(); ++index) {
             getChild(index)->getGlobalVerticesInfo(vertSet);
         }
     }
-
     VERTICES_INFO* vert = getVerticesInfo();
+    LOGD("EglItem::%s getVerticesInfo %p\n",__FUNCTION__, vert);
     if (NULL != vert) {
-        vertSet.insert(vert);
+        LOGD("EglItem::%s insert %p\n",__FUNCTION__, vert);
+        vertSet->insert(vert);
     }
 
 }
@@ -224,11 +226,13 @@ void EglItem::getGlobalRotate(float* rotate)
 
 EglItem::VERTICES_INFO* EglItem::getVerticesInfo()
 {
+    LOGD("EglItem::%s\n",__FUNCTION__);
     VERTICES_INFO* verticesInfo = getVerticesInfoObj();
     if (NULL == verticesInfo) {
         verticesInfo = new VERTICES_INFO();
         if (!setVerticesInfoObj(verticesInfo)) {
             delete verticesInfo;
+            LOGE("EglItem::%s delete verticesInfo\n",__FUNCTION__);
             verticesInfo = NULL;
         }
     }
@@ -329,6 +333,14 @@ void EglItem::setRotateZ(float z)
 {
     if (z >= 0.0f)
         mRotate[2] = z;
+}
+
+void EglItem::setColor(u_int8_t r, u_int8_t g, u_int8_t b, u_int8_t a)
+{
+    mColor[0] = r;
+    mColor[1] = g;
+    mColor[2] = b;
+    mColor[3] = a;
 }
 
 EglItem* EglItem::getChild(const int pos)

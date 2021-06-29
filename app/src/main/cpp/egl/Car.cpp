@@ -15,7 +15,7 @@ Car::~Car()
 
 void Car::initVerticesInfo(VERTICES_INFO *verticesInfo)
 {
-    if (NULL != verticesInfo) {
+    if (NULL == verticesInfo) {
         return;
     }
 

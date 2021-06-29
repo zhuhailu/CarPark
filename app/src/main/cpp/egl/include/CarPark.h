@@ -14,7 +14,7 @@ public:
     virtual ~CarPark();
 
     virtual EglItemGroup* createWorld();
-    virtual void getShaderSrc(char* vertShaderSrc, char* fragShaderSrc);
+    virtual void getShaderSrc(char** vertShaderSrc, char** fragShaderSrc);
 
 private:
 };

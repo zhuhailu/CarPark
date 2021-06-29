@@ -34,7 +34,7 @@ public:
         void clear();
     };
 
-    void getGlobalVerticesInfo(std::set<VERTICES_INFO*> vertSet);
+    void getGlobalVerticesInfo(std::set<VERTICES_INFO*>* vertSet);
     int getChildrenTreeInstanceCount();
     virtual void getInstanceColor(GLubyte (*colors)[4], int* curIndex, const int count);
     virtual void getInstanceSize(GLfloat (*sizes)[3], int* curIndex, const int count);
@@ -77,6 +77,8 @@ public:
     inline float getRotateX() { return mRotate[0]; }
     inline float getRotateY() { return mRotate[1]; }
     inline float getRotateZ() { return mRotate[2]; }
+
+    void setColor(u_int8_t r, u_int8_t g, u_int8_t b, u_int8_t a = 255);
 
     inline void setParent(EglItem* parent) { mParent = parent; }
     inline EglItem* getParent() { return mParent; }

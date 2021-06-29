@@ -18,6 +18,8 @@ EglItemGroup::~EglItemGroup()
 
 EglItem::VERTICES_INFO * EglItemGroup::getGlobalVerticesInfo()
 {
+    LOGD("EglItemGroup::%s",__FUNCTION__);
+
     // clear global index;
     for (auto it: mVerticesInfoSet) {
         it->globalIndex = 0;
@@ -29,8 +31,10 @@ EglItem::VERTICES_INFO * EglItemGroup::getGlobalVerticesInfo()
     mVerticesInfoSet.clear();
     for (int index = 0; index < getChildrenCount(); ++index) {
         EglItem* child = getChild(index);
-        child->getGlobalVerticesInfo(mVerticesInfoSet);
+        child->getGlobalVerticesInfo(&mVerticesInfoSet);
     }
+
+    LOGD("EglItemGroup::%s getGlobalVerticesInfo size %d \n",__FUNCTION__, mVerticesInfoSet.size());
 
     VERTICES_INFO* result = new VERTICES_INFO();
     result->isInit = true;
@@ -40,6 +44,9 @@ EglItem::VERTICES_INFO * EglItemGroup::getGlobalVerticesInfo()
         result->numIndicesTriangles += it->numIndicesTriangles;
         result->numIndicesLines += it->numIndicesLines;
     }
+
+    LOGD("EglItemGroup::%s result count %d %d %d \n",__FUNCTION__, result->numVertices,
+         result->numIndicesTriangles, result->numIndicesLines);
 
     result->vertices =
             static_cast<GLfloat*>(malloc(sizeof(GLfloat) * 3 * result->numVertices));

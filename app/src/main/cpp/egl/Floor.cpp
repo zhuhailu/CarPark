@@ -19,7 +19,7 @@ Floor::~Floor()
 
 void Floor::initVerticesInfo(EglItem::VERTICES_INFO* verticesInfo)
 {
-    if (NULL != verticesInfo) {
+    if (NULL == verticesInfo) {
         return;
     }
 
