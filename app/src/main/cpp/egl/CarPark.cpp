@@ -5,6 +5,8 @@
 #include "CarPark.h"
 #include "EglItemGroup.h"
 #include "Floor.h"
+#include "Car.h"
+#include "Camera.h"
 
 
 CarPark::CarPark()
@@ -22,11 +24,17 @@ EglItemGroup* CarPark::createWorld()
 //
 //    }
 
-    Floor* f = new Floor();
-    f->setScale(10, 2, 0);
-    f->setRotateX(45.0f);
+    Car* f = new Car();
+    f->setScale(1, 1, 1);
+    f->setRotate(45.0f, 45.0f, 0.0f);
+    f->setPostion(0, 0, 0);
     f->setColor(255, 0, 0);
     root->addChild(f);
+
+    Camera* camera = new Camera();
+    Camera::setActiveCamera(camera);
+    camera->setTarget(f);
+    camera->setPostion(0, 0, 10);
 
     return root;
 }
@@ -37,14 +45,15 @@ void CarPark::getShaderSrc(char** vertShaderSrc, char** fragShaderSrc)
             "#version 300 es                             \n"
             "layout(location = 0) in vec4 i_vertices;    \n"
             "layout(location = 1) in vec4 i_color;       \n"
-            "layout(location = 2) in int  i_index;       \n"
-            "layout(location = 3) in vec3 i_size;        \n"
+            "layout(location = 2) in vec3 i_size;        \n"
+            "layout(location = 3) in int  i_index;       \n"
             "layout(location = 4) in mat4 i_mvpMatrix;   \n"
             "out vec4 v_color;                           \n"
             "void main()                                 \n"
             "{                                           \n"
-            "   if (gl_VertexID < i_index)               \n"
+            "   if (gl_VertexID < i_index) {             \n"
             "       return;                              \n"
+            "   }                                        \n"
             "                                            \n"
             "   vec4 u_vertices = vec4(i_vertices.x * i_size.x, i_vertices.y * i_size.y, \
                                   i_vertices.z * i_size.z, i_vertices.w);         \n"

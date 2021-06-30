@@ -110,7 +110,7 @@ void EglItemGroup::getInstanceRotate(GLfloat (*rotates)[3], int *curIndex, const
     int iChildCount = getChildrenCount();
     float rootRotate[] = {0.0f, 0.0f, 0.0f};
     for (int index = 0; index < iChildCount; ++index) {
-        getChild(index)->getInstancePostion(rotates, curIndex, count, rootRotate);
+        getChild(index)->getInstanceRotate(rotates, curIndex, count, rootRotate);
     }
 }
 

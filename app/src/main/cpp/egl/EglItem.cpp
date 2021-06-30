@@ -203,12 +203,13 @@ void EglItem::getInstanceIndices(GLuint (*indices), int* curIndex, const int cou
 void EglItem::getGlobalPostion(float* pos)
 {
     memcpy(pos, mPostion, sizeof(mPostion));
+
     EglItem* it = this;
     while (NULL != it->getParent()) {
         it = it->getParent();
-        pos[0] += pos[0] + it->getPostionX();
-        pos[1] += pos[1] + it->getPostionY();
-        pos[2] += pos[2] + it->getPostionZ();
+        pos[0] += it->getPostionX();
+        pos[1] += it->getPostionY();
+        pos[2] += it->getPostionZ();
     }
 }
 
@@ -282,31 +283,25 @@ void EglItem::setScaleZ(float z)
 
 void EglItem::setPostion(float x, float y, float z)
 {
-    if (x >= 0.0f && y >= 0.0f && z >= 0.0f) {
-        mPostion[0] = x;
-        mPostion[1] = y;
-        mPostion[2] = z;
-    }
+    mPostion[0] = x;
+    mPostion[1] = y;
+    mPostion[2] = z;
 }
 
 void EglItem::setPostionX(float x)
 {
-    if (x >= 0.0f)
-        mPostion[0] = x;
+    mPostion[0] = x;
 }
 
 void EglItem::setPostionY(float y)
 {
-    if (y >= 0.0f)
-        mPostion[1] = y;
+    mPostion[1] = y;
 }
 
 void EglItem::setPostionZ(float z)
 {
-    if (z >= 0.0f)
-        mPostion[2] = z;
+    mPostion[2] = z;
 }
-
 
 void EglItem::setRotate(float x, float y, float z)
 {

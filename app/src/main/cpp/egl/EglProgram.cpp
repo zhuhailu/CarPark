@@ -10,8 +10,6 @@ EglProgram::EglProgram()
     : mProgramObject(0)
     , mColorVBO(0)
     , mSizeVBO(0)
-    , mPostionVBO(0)
-    , mRotateVBO(0)
     , mIndexVBO(0)
     , mMvpVBO(0)
     , mVerticesVBO(0)
@@ -114,7 +112,7 @@ bool EglProgram::init(ESContext *esContext)
 
         glGenBuffers ( 1, &mSizeVBO );
         glBindBuffer ( GL_ARRAY_BUFFER, mSizeVBO );
-        glBufferData ( GL_ARRAY_BUFFER, iInstanceCount * 3, sizes, GL_STATIC_DRAW );
+        glBufferData ( GL_ARRAY_BUFFER, iInstanceCount * 3 * sizeof(GLfloat), sizes, GL_STATIC_DRAW );
 
         for (int i = 0; i < iInstanceCount; ++i) {
             LOGD("EglProgram::%s getInstanceSize %f %f %f \n",__FUNCTION__,
@@ -129,7 +127,7 @@ bool EglProgram::init(ESContext *esContext)
 
         glGenBuffers ( 1, &mIndexVBO );
         glBindBuffer ( GL_ARRAY_BUFFER, mIndexVBO );
-        glBufferData ( GL_ARRAY_BUFFER, iInstanceCount, indices, GL_STATIC_DRAW );
+        glBufferData ( GL_ARRAY_BUFFER, iInstanceCount * sizeof(GLfloat), indices, GL_STATIC_DRAW );
 
         for (int i = 0; i < iInstanceCount; ++i) {
             LOGD("EglProgram::%s getInstanceIndices %d \n",__FUNCTION__, indices[i]);
@@ -150,8 +148,6 @@ bool EglProgram::init(ESContext *esContext)
 
 void EglProgram::update(ESContext *esContext, float deltaTime)
 {
-    LOGD("EglProgram::%s",__FUNCTION__);
-
     const int iInstanceCount = mInstanceCount;
 
     ESMatrix *matrixBuf;
@@ -159,7 +155,7 @@ void EglProgram::update(ESContext *esContext, float deltaTime)
     float    aspect;
 
     Camera* camera = Camera::getActiveCamera();
-    float fovy = 45.0f;
+    float fovy = 60.0f;
     float translate[] = {0.0f, 0.0f, 0.0f};
     if (NULL != camera) {
         // TBD: get Camera fov.
@@ -167,9 +163,9 @@ void EglProgram::update(ESContext *esContext, float deltaTime)
         EglItem* target = camera->getTarget();
         if (NULL != target) {
             target->getGlobalPostion(translate);
-            translate[0] = - translate[0];
-            translate[1] = - translate[1];
-            translate[2] = - translate[2];
+            translate[0] = - translate[0] - camera->getPostionX();
+            translate[1] = - translate[1] - camera->getPostionY();
+            translate[2] = - translate[2] - camera->getPostionZ();
         }
     }
 
@@ -194,6 +190,8 @@ void EglProgram::update(ESContext *esContext, float deltaTime)
         // Generate a model view matrix to rotate/translate the cube
         esMatrixLoadIdentity ( &modelview );
 
+//        LOGD("EglProgram::%s translate %.2f, %.2f, %.2f\n", __FUNCTION__,
+//             translate[0], translate[1], translate[2]);
         // Per-instance translation
         esTranslate ( &modelview, translate[0], translate[1], translate[2] );
 
@@ -204,7 +202,10 @@ void EglProgram::update(ESContext *esContext, float deltaTime)
         if ((rotates[instance][2] / 360.0f) >= 1.0f)
             rotates[instance][2] -= 360.0f * (int)(rotates[instance][2] / 360.0f);
 
-        // Rotate the cube
+//        LOGD("EglProgram::%s rotates %.2f, %.2f, %.2f\n", __FUNCTION__,
+//             rotates[instance][0], rotates[instance][1], rotates[instance][2]);
+
+        // Rotate
         esRotate ( &modelview, rotates[instance][0], 1.0, 0.0, 0.0 );
         esRotate ( &modelview, rotates[instance][1], 0.0, 1.0, 0.0 );
         esRotate ( &modelview, rotates[instance][2], 0.0, 0.0, 1.0 );
@@ -212,17 +213,16 @@ void EglProgram::update(ESContext *esContext, float deltaTime)
         // Compute the final MVP by multiplying the
         // modevleiw and perspective matrices together
         esMatrixMultiply ( &matrixBuf[instance], &modelview, &perspective );
-    }
-    for (int i = 0; i < iInstanceCount; ++i) {
-        LOGD("EglProgram::%s getInstanceIndices\n"
-             "{%.2f, %.2f, %.2f, %.2f\n"
-             " %.2f, %.2f, %.2f, %.2f\n"
-             " %.2f, %.2f, %.2f, %.2f\n"
-             " %.2f, %.2f, %.2f, %.2f}",__FUNCTION__,
-             matrixBuf[i].m[0][0], matrixBuf[i].m[0][1], matrixBuf[i].m[0][2], matrixBuf[i].m[0][3],
-             matrixBuf[i].m[1][0], matrixBuf[i].m[1][1], matrixBuf[i].m[1][2], matrixBuf[i].m[1][3],
-             matrixBuf[i].m[2][0], matrixBuf[i].m[2][1], matrixBuf[i].m[2][2], matrixBuf[i].m[2][3],
-             matrixBuf[i].m[3][0], matrixBuf[i].m[3][1], matrixBuf[i].m[3][2], matrixBuf[i].m[3][3]);
+
+//        LOGD("EglProgram::%s getInstanceIndices\n"
+//             "{%.2f, %.2f, %.2f, %.2f\n"
+//             " %.2f, %.2f, %.2f, %.2f\n"
+//             " %.2f, %.2f, %.2f, %.2f\n"
+//             " %.2f, %.2f, %.2f, %.2f}",__FUNCTION__,
+//             matrixBuf[i].m[0][0], matrixBuf[i].m[0][1], matrixBuf[i].m[0][2], matrixBuf[i].m[0][3],
+//             matrixBuf[i].m[1][0], matrixBuf[i].m[1][1], matrixBuf[i].m[1][2], matrixBuf[i].m[1][3],
+//             matrixBuf[i].m[2][0], matrixBuf[i].m[2][1], matrixBuf[i].m[2][2], matrixBuf[i].m[2][3],
+//             matrixBuf[i].m[3][0], matrixBuf[i].m[3][1], matrixBuf[i].m[3][2], matrixBuf[i].m[3][3]);
     }
 
     glUnmapBuffer ( GL_ARRAY_BUFFER );
@@ -230,8 +230,6 @@ void EglProgram::update(ESContext *esContext, float deltaTime)
 
 void EglProgram::draw(ESContext *esContext)
 {
-    LOGD("EglProgram::%s",__FUNCTION__);
-
     // Set the viewport
     glViewport ( 0, 0, esContext->width, esContext->height );
 
@@ -256,17 +254,17 @@ void EglProgram::draw(ESContext *esContext)
     glEnableVertexAttribArray ( 1 );
     glVertexAttribDivisor ( 1, 1 ); // One color per instance
 
-    // Load the instance size buffer
-    glBindBuffer ( GL_ARRAY_BUFFER, mSizeVBO );
-    glVertexAttribPointer ( 3, 3, GL_FLOAT,
-                            GL_FALSE, 3 * sizeof ( GLfloat ), ( const void * ) NULL );
+    // Load the instance indices buffer
+    glBindBuffer ( GL_ARRAY_BUFFER, mIndexVBO );
+    glVertexAttribPointer ( 3, 1, GL_UNSIGNED_INT,
+                            GL_FALSE, 1 * sizeof ( GLuint ), ( const void * ) NULL );
     glEnableVertexAttribArray ( 3 );
     glVertexAttribDivisor ( 3, 1 ); // One size per instance
 
-    // Load the instance indices buffer
-    glBindBuffer ( GL_ARRAY_BUFFER, mIndexVBO );
-    glVertexAttribPointer ( 2, 1, GL_UNSIGNED_INT,
-                            GL_FALSE, 1 * sizeof ( GLuint ), ( const void * ) NULL );
+    // Load the instance size buffer
+    glBindBuffer ( GL_ARRAY_BUFFER, mSizeVBO );
+    glVertexAttribPointer ( 2, 3, GL_FLOAT,
+                            GL_FALSE, 3 * sizeof ( GLfloat ), ( const void * ) NULL );
     glEnableVertexAttribArray ( 2 );
     glVertexAttribDivisor ( 2, 1 ); // One size per instance
 
@@ -292,12 +290,10 @@ void EglProgram::draw(ESContext *esContext)
 
     // Bind the index buffer
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, mIndicesTrianglesIBO );
-
-
-    LOGD("EglProgram::%s %d, %d",__FUNCTION__, mNumIndicesTriangles, mInstanceCount);
     // Draw the cubes
     glDrawElementsInstanced ( GL_TRIANGLES, mNumIndicesTriangles, GL_UNSIGNED_INT, ( const void * ) NULL, mInstanceCount );
 
+    glDisableVertexAttribArray ( 1 );
     glVertexAttrib4f ( 1, 0.0f, 0.0f, 0.0f, 1.0f );
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, mIndicesLinesIBO );
     glDrawElementsInstanced ( GL_LINES, mNumIndicesLines, GL_UNSIGNED_INT, ( const void * ) NULL, mInstanceCount );
@@ -308,8 +304,6 @@ void EglProgram::shutdown ( ESContext *esContext )
 {
     glDeleteBuffers ( 1, &mColorVBO );
     glDeleteBuffers ( 1, &mSizeVBO );
-//    glDeleteBuffers ( 1, &mPostionVBO );
-//    glDeleteBuffers ( 1, &mRotateVBO );
     glDeleteBuffers ( 1, &mIndexVBO );
     glDeleteBuffers ( 1, &mMvpVBO );
     glDeleteBuffers ( 1, &mVerticesVBO );

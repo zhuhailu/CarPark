@@ -27,8 +27,6 @@ protected:
     // VBOs
     GLuint          mColorVBO;
     GLuint          mSizeVBO;
-    GLuint          mPostionVBO;
-    GLuint          mRotateVBO;
     GLuint          mIndexVBO;
     GLuint          mMvpVBO;
     GLuint          mVerticesVBO;
