@@ -64,15 +64,34 @@ EglItem::VERTICES_INFO * EglItemGroup::getGlobalVerticesInfo()
         it->globalIndex = numVertices;
         numVertices += it->numVertices;
 
-        memcpy(result->indicesTriangles + numIndicesTriangles, it->indicesTriangles,
-               sizeof (GLuint) * it->numIndicesTriangles);
-        it->globalIndexTriangles = numIndicesTriangles;
-        numIndicesTriangles = it->numIndicesTriangles;
+//        for (int i = 0; i < it->numIndicesTriangles; i += 3) {
+//            LOGD("EglItemGroup::%s indicesTriangles %d %d %d\n",__FUNCTION__,
+//                 it->indicesTriangles[i], it->indicesTriangles[i+1],
+//                 it->indicesTriangles[i+2] );
+//        }
+//        LOGD("EglItemGroup::%p %p",__FUNCTION__, result->indicesTriangles,
+//             result->indicesTriangles + numIndicesTriangles);
+//        LOGD("EglItemGroup::%s indicesTriangles ------------- end",__FUNCTION__);
 
-        memcpy(result->indicesLines + numIndicesLines, it->indicesLines,
-               sizeof (GLuint) * it->numIndicesLines);
+        for (int index = 0; index < it->numIndicesTriangles; ++index) {
+            result->indicesTriangles[index + numIndicesTriangles] = it->indicesTriangles[index] + it->globalIndex;
+        }
+        it->globalIndexTriangles = numIndicesTriangles;
+        numIndicesTriangles += it->numIndicesTriangles;
+
+//        for (int i = 0; i < it->numIndicesLines; i += 2) {
+//            LOGD("EglItemGroup::%s indicesLines %d %d\n",__FUNCTION__,
+//                 it->indicesLines[i], it->indicesLines[i+1]);
+//        }
+//        LOGD("EglItemGroup::%p %p",__FUNCTION__, result->indicesLines,
+//             result->indicesLines + numIndicesLines);
+//        LOGD("EglItemGroup::%s indicesLines ------------- end",__FUNCTION__);
+
+        for (int index = 0; index < it->numIndicesLines; ++index) {
+            result->indicesLines[index + numIndicesLines] = it->indicesLines[index] + it->globalIndex;
+        }
         it->globalIndexLines = numIndicesLines;
-        numIndicesTriangles = it->numIndicesLines;
+        numIndicesLines += it->numIndicesLines;
     }
 
     return result;
@@ -114,7 +133,7 @@ void EglItemGroup::getInstanceRotate(GLfloat (*rotates)[3], int *curIndex, const
     }
 }
 
-void EglItemGroup::getInstanceIndices(GLuint (*indices), int *curIndex, const int count)
+void EglItemGroup::getInstanceIndices(GLuint (*indices)[2], int *curIndex, const int count)
 {
     int iChildCount = getChildrenCount();
     for (int index = 0; index < iChildCount; ++index) {

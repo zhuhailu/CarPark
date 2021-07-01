@@ -7,6 +7,7 @@
 
 #include "EglProgram.h"
 
+class EglItem;
 
 class CarPark : public EglProgram {
 public:
@@ -14,9 +15,13 @@ public:
     virtual ~CarPark();
 
     virtual EglItemGroup* createWorld();
+    virtual void updateWorld(float deltaTime);
     virtual void getShaderSrc(char** vertShaderSrc, char** fragShaderSrc);
 
 private:
+    EglItemGroup* mRoot;
+    EglItem* mCar;
+    bool mIsForward;
 };
 
 #endif //CARPARK_CARPARK_H

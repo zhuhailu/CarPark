@@ -60,10 +60,13 @@ bool EglProgram::init(ESContext *esContext)
                    verticesInfo->indicesTriangles, GL_STATIC_DRAW );
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
-    for (int i = 0; i < mNumIndicesTriangles; ++i) {
-        LOGD("EglProgram::%s indicesTriangles %d \n",__FUNCTION__,
-             verticesInfo->indicesTriangles[i]);
+    for (int i = 0; i < mNumIndicesTriangles; i += 3) {
+        LOGD("EglProgram::%s indicesTriangles %d %d %d\n",__FUNCTION__,
+             verticesInfo->indicesTriangles[i], verticesInfo->indicesTriangles[i+1],
+             verticesInfo->indicesTriangles[i+2] );
     }
+
+    LOGD("EglProgram::%s indicesTriangles ------------- end",__FUNCTION__);
 
     // Index buffer object
     glGenBuffers ( 1, &mIndicesLinesIBO );
@@ -72,10 +75,12 @@ bool EglProgram::init(ESContext *esContext)
                    verticesInfo->indicesLines, GL_STATIC_DRAW );
     glBindBuffer ( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
-    for (int i = 0; i < mNumIndicesLines; ++i) {
-        LOGD("EglProgram::%s indicesLines %d \n",__FUNCTION__,
-             verticesInfo->indicesLines[i]);
+    for (int i = 0; i < mNumIndicesLines; i += 2) {
+        LOGD("EglProgram::%s indicesLines %d %d\n",__FUNCTION__,
+             verticesInfo->indicesLines[i], verticesInfo->indicesLines[i+1]);
     }
+
+    LOGD("EglProgram::%s indicesLines ------------- end",__FUNCTION__);
 
     // vertices VBO for cube model
     glGenBuffers ( 1, &mVerticesVBO );
@@ -83,6 +88,13 @@ bool EglProgram::init(ESContext *esContext)
     glBufferData ( GL_ARRAY_BUFFER, sizeof ( GLfloat ) * 3 * verticesInfo->numVertices,
                    verticesInfo->vertices, GL_STATIC_DRAW );
 
+//    for (int i = 0; i < verticesInfo->numVertices; ++i) {
+//        LOGD("EglProgram::%s Vertices %.2f %.2f %.2f\n",__FUNCTION__,
+//             verticesInfo->vertices[i*3], verticesInfo->vertices[i*3+1],
+//             verticesInfo->vertices[i*3+2] );
+//    }
+
+    LOGD("EglProgram::%s Vertices ------------- end",__FUNCTION__);
     delete verticesInfo;
 
     LOGD("EglProgram::%s bind vertices buff end",__FUNCTION__);
@@ -121,16 +133,16 @@ bool EglProgram::init(ESContext *esContext)
     }
 
     {
-        GLuint indices[iInstanceCount];
+        GLuint indices[iInstanceCount][2];
         int instance = 0;
         mRoot->getInstanceIndices(indices, &instance, iInstanceCount);
 
         glGenBuffers ( 1, &mIndexVBO );
         glBindBuffer ( GL_ARRAY_BUFFER, mIndexVBO );
-        glBufferData ( GL_ARRAY_BUFFER, iInstanceCount * sizeof(GLfloat), indices, GL_STATIC_DRAW );
+        glBufferData ( GL_ARRAY_BUFFER, iInstanceCount * 2 * sizeof(GLuint), indices, GL_STATIC_DRAW );
 
         for (int i = 0; i < iInstanceCount; ++i) {
-            LOGD("EglProgram::%s getInstanceIndices %d \n",__FUNCTION__, indices[i]);
+            LOGD("EglProgram::%s getInstanceIndices %d %d\n",__FUNCTION__, indices[i][0], indices[i][1]);
         }
     }
 
@@ -148,6 +160,8 @@ bool EglProgram::init(ESContext *esContext)
 
 void EglProgram::update(ESContext *esContext, float deltaTime)
 {
+    updateWorld(deltaTime);
+
     const int iInstanceCount = mInstanceCount;
 
     ESMatrix *matrixBuf;
@@ -180,8 +194,16 @@ void EglProgram::update(ESContext *esContext, float deltaTime)
     matrixBuf = ( ESMatrix * ) glMapBufferRange ( GL_ARRAY_BUFFER, 0, sizeof ( ESMatrix ) * iInstanceCount, GL_MAP_WRITE_BIT );
 
     GLfloat rotates[iInstanceCount][3];
-    int index = 0;
-    mRoot->getInstanceRotate(rotates, &index, iInstanceCount);
+    {
+        int index = 0;
+        mRoot->getInstanceRotate(rotates, &index, iInstanceCount);
+    }
+
+    GLfloat postions[iInstanceCount][3];
+    {
+        int index = 0;
+        mRoot->getInstancePostion(postions, &index, iInstanceCount);
+    }
 
     for ( int instance = 0; instance < iInstanceCount; instance++ )
     {
@@ -190,6 +212,7 @@ void EglProgram::update(ESContext *esContext, float deltaTime)
         // Generate a model view matrix to rotate/translate the cube
         esMatrixLoadIdentity ( &modelview );
 
+        esTranslate ( &modelview, postions[instance][0], postions[instance][1], postions[instance][2] );
 //        LOGD("EglProgram::%s translate %.2f, %.2f, %.2f\n", __FUNCTION__,
 //             translate[0], translate[1], translate[2]);
         // Per-instance translation
@@ -256,8 +279,8 @@ void EglProgram::draw(ESContext *esContext)
 
     // Load the instance indices buffer
     glBindBuffer ( GL_ARRAY_BUFFER, mIndexVBO );
-    glVertexAttribPointer ( 3, 1, GL_UNSIGNED_INT,
-                            GL_FALSE, 1 * sizeof ( GLuint ), ( const void * ) NULL );
+    glVertexAttribPointer ( 3, 2, GL_UNSIGNED_INT,
+                            GL_FALSE, 2 * sizeof ( GLuint ), ( const void * ) NULL );
     glEnableVertexAttribArray ( 3 );
     glVertexAttribDivisor ( 3, 1 ); // One size per instance
 

@@ -42,7 +42,7 @@ public:
                                     const float* parentPos);
     virtual void getInstanceRotate(GLfloat (*rotates)[3], int* curIndex, const int count,
                                    const float* parentRotate);
-    virtual void getInstanceIndices(GLuint (*indices), int* curIndex, const int count);
+    virtual void getInstanceIndices(GLuint (*indices)[2], int* curIndex, const int count);
 
     void getGlobalPostion(float* pos);
     void getGlobalRotate(float* rotate);

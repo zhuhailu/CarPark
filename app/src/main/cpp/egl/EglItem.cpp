@@ -184,13 +184,14 @@ void EglItem::getInstanceRotate(GLfloat (*rotates)[3], int* curIndex, const int 
     }
 }
 
-void EglItem::getInstanceIndices(GLuint (*indices), int* curIndex, const int count)
+void EglItem::getInstanceIndices(GLuint (*indices)[2], int* curIndex, const int count)
 {
     if (*curIndex >= count) {
         return;
     }
     if (!isPerspective()) {
-        indices[*curIndex] = getVerticesInfoObj()->globalIndex;
+        indices[*curIndex][0] = getVerticesInfoObj()->globalIndex;
+        indices[*curIndex][1] = getVerticesInfoObj()->globalIndex + getVerticesInfoObj()->numVertices;
         (*curIndex)++;
 
         int iChildCount = getChildrenCount();
