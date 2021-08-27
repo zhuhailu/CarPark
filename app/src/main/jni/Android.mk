@@ -26,8 +26,12 @@ LOCAL_SRC_FILES := $(COMMON_SRC_PATH)/esShader.c \
 				   $(SRC_PATH)/egl/EglProgramFactory.cpp
 
 
+# LOCAL_SRC_FILES += $(SRC_PATH)/Simple/Noise3D.c \
+#                    $(SRC_PATH)/Simple/ParticleSystemTransformFeedback.c
+
 
 LOCAL_C_INCLUDES	:= $(SRC_PATH)/egl/include \
+                       $(SRC_PATH)/Simple \
 					   $(COMMON_INC_PATH)
 
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv3
